@@ -1,0 +1,2 @@
+<script type="text/javascript" src="${rc.contextPath}/resources/bootstrap/js/bootstrap.js?v=${res_version}"></script>
+<script src="${rc.contextPath}/resources/bootstrap/js/jquery.bootstrap-duallistbox.js"></script>
