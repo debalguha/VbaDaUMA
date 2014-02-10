@@ -19,6 +19,7 @@
 			<div>
 				<button id="btnCreateUserPage" class="btn btn-inverse" type="button">Create User</button>
 				<button id="btnEditUserPage" class="btn btn-inverse" type="button">Edit User</button>
+				<button id="btnUserDetailsPage" class="btn btn-inverse" type="button">User Details</button>
 				<button id="btnChangePassword" class="btn btn-inverse" type="button">Change Password</button>
 			</div>
 			<table class="table">
@@ -28,14 +29,7 @@
 						<th>Username</th>
 						<th>status</th>
 						<th>FirstName</th>
-						<th>LastName</th>
-						<th>Phone</th>
-						<th>Team</th>
-						<#if appList?? && appList?size &gt; 0>
-						<#list appList as item>
-							<th>${item.name}</th>
-						</#list>
-						</#if>
+						<th>LastName</th>						
 					</tr>
 				</thead>
 				<tbody>
@@ -47,26 +41,7 @@
 								<td>${item.username}</td>
 								<td>${item.status}</td>
 								<td>${item.firstName!''}</td>
-								<td>${item.lastName!''}</td>
-								<td>${item.phone!''}</td>
-								<td>
-									<#if item.team??>
-										${item.team.name!''}
-									</#if>
-								</td>
-								<#if appList?? && appList?size &gt; 0>
-								<#list appList as app>
-									<td>
-									<#if item.userAppAccessList?? && item.userAppAccessList?size &gt; 0>
-									<#list item.userAppAccessList as uaa>
-										<#if uaa.appName == app.name>
-											${uaa.access.name!''}
-										</#if>
-									</#list>
-									</#if>
-									</td>
-								</#list>
-								</#if>
+								<td>${item.lastName!''}</td>								
 							</tr>
 						</#list>
 					<#else>

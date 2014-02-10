@@ -199,12 +199,6 @@ public class UserServiceSimulatorImpl implements IUserService {
 
 
 	@Override
-	public void deleteAllUserTeamAllocationByUser(UserInfo user) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void updateUserDetails(UserInfo user,
 			Map<String, String> appAccessMap, Collection<Team> teams) {
 		// TODO Auto-generated method stub

@@ -9,7 +9,6 @@ package com.va.uma.web.action;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.va.uma.model.Team;
-import com.va.uma.model.UserAppAccess;
 import com.va.uma.model.UserInfo;
 import com.va.uma.model.UserInfo.UserStatus;
 import com.va.uma.model.UserInfo.UserType;
@@ -50,7 +48,6 @@ public class UserAction extends BaseAction {
 			user = userService.getUserInfoByUsername(username);
 			user.setLogin(login);
 			userService.updateUser(user);
-		
 	
 		} catch (Exception e) {
 			System.out.println("failed to updateUserLoginTime failed");
