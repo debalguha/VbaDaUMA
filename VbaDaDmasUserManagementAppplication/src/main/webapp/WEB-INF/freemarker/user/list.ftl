@@ -62,12 +62,41 @@
 			<label style="width: 90px">confirm password</label>
 			<input  type="password" name="confpassword" value="" maxlength="30"/>
 			<p ></p>
-		
-			    
-			
-		
 		</form>
 	</div>
+	<div id="userDetailPopup" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header" style="background: none repeat scroll 0 0 #222222; color: #FFFFFF;">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="color: #FFFFFF;">×</button>
+	    <h4 id="myModalLabel">User Details</h4>
+	  </div>
+	  <div class="modal-body">
+	    <div class="row-fluid">
+	    	<div class="span-6">
+	    		<table id="appAccessTable" class="table table-bordered table-striped table-hover">
+	    			<caption>Application Access</caption>
+	    			<thead>
+	    				<tr>
+	    					<th>Application</th>
+	    					<th>Access</th>
+	    				</tr>
+	    			</thead>
+	    			<tbody>
+	    			</tbody>
+	    		</table>
+	    	</div>
+	    	<div class="span-6">
+	    		<table id="teamAllocationTable" class="table table-bordered table-striped table-hover">
+	    			<caption>Team Allocation</caption>
+	    			<tbody>
+	    			</tbody>
+	    		</table>	    	
+	    	</div>	    	
+	    </div>
+	  </div>
+	  <div class="modal-footer">
+	    <button class="btn btn-inverse" data-dismiss="modal" aria-hidden="true">Close</button>
+	  </div>
+	</div>	
 	<script type="text/javascript" src="${rc.contextPath}/resources/js/user.js?v=${res_version}"></script>
 	<#include "../lib/footer.ftl">
 </body>

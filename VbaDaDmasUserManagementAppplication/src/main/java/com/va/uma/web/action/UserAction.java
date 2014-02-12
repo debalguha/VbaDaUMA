@@ -23,10 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.va.uma.model.Team;
+import com.va.uma.model.UserAppAccess;
 import com.va.uma.model.UserInfo;
 import com.va.uma.model.UserInfo.UserStatus;
 import com.va.uma.model.UserInfo.UserType;
@@ -36,6 +38,29 @@ import com.va.uma.util.MD5;
 @Controller
 public class UserAction extends BaseAction {
 	private static final Logger logger = Logger.getLogger(UserAction.class.getName());
+	
+	@RequestMapping("/user/{userId}/details.do")
+	public UserDetails userDetail(@PathVariable String userId) {
+		UserInfo userInfo = userService.getUserInfoById(userId);
+		List<UserAppAccess> userAppAccessList = userInfo.getUserAppAccessList();
+		Map<String, String> appAccessMap = new HashMap<String, String>();
+		if(userAppAccessList!=null){
+			for(UserAppAccess userAppAccess : userAppAccessList){
+				String appName = userAppAccess.getAppName();
+				String access = userAppAccess.getAccess().getName();
+				appAccessMap.put(appName, access);
+			}
+		}
+		List<String> teams = new ArrayList<String>();
+		Set<UserTeamAllocation> userTeamAllocations = userInfo.getUserTeamAllocations();
+		if(userTeamAllocations!=null){
+			for(UserTeamAllocation teamAllocation : userTeamAllocations)
+				teams.add(teamAllocation.getTeam().getName());
+		}
+		
+		return new UserDetails(appAccessMap, teams);
+	}
+	
 	@RequestMapping("/user/list.do")
 	public String listPage(HttpServletRequest request, HttpServletResponse response, Model model) {
 		model.addAttribute("dataList", userService.listUser(0, 0));
@@ -57,7 +82,6 @@ public class UserAction extends BaseAction {
 	}
 
 	@RequestMapping("/user/add.do")
-
 	public String addPage(HttpServletRequest request, HttpServletResponse response, Model model) {
 		System.out.println("!!!!!!!!!!!!!!!!!!!!!/user/add.do");
 		model.addAttribute("appList", appService.getApplicationList());
@@ -209,5 +233,23 @@ public class UserAction extends BaseAction {
 			@RequestParam(value = "userId") String userId) {
 		userService.deleteUser(userId);
 		responseJson4Success(response);
+	}
+	
+	public static class UserDetails{
+		private final Map<String, String> applicationAccess;
+		private final List<String> teams;
+		public UserDetails(Map<String, String> applicationAccess,
+				List<String> teams) {
+			super();
+			this.applicationAccess = applicationAccess;
+			this.teams = teams;
+		}
+		public Map<String, String> getApplicationAccess() {
+			return applicationAccess;
+		}
+		public List<String> getTeams() {
+			return teams;
+		}
+		
 	}
 }

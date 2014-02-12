@@ -177,6 +177,31 @@ $(document).ready(function() {
 		});
 	})();
 	(function() {
+		$('#btnUserDetailsPage').click(function() {
+			var obj = $('input[name="userId"]:checked');
+			if (!obj || obj.length == 0) {
+				alert('Please select a user to edit');
+				return;
+			}
+			var userId = obj.val();
+			$.get(appContextPath + '/user/'+userId+'/details.do', function(data){
+				if(data){
+					$('#appAccessTable').find('tbody').empty();
+					var tbodyAppAccess = $('#appAccessTable').find('tbody');
+					$.each(data.userDetails.applicationAccess, function(key, value){
+						tbodyAppAccess.append('<tr><td>'+key+'</td><td>'+value+'</td></tr>');
+					});
+					$('#teamAllocationTable').find('tbody').empty();
+					var tbodyTealAllocation = $('#teamAllocationTable').find('tbody');
+					$.each(data.userDetails.teams, function(i, item){
+						tbodyTealAllocation.append('<tr><td>'+item+'</td></tr>');
+					});					
+				}
+			});
+			$('#userDetailPopup').modal();
+		});
+	})();	
+	(function() {
 		$('#btnChangePassword').click(function() {
 			var obj = $('input[name="userId"]:checked');
 			if (!obj || obj.length == 0) {
