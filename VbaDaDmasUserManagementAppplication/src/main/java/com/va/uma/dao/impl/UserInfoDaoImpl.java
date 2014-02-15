@@ -129,6 +129,7 @@ public class UserInfoDaoImpl extends BaseDao implements IUserInfoDao {
 		System.out.println(query.list());
 		return query.list();
 	}
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<UserAppAccess> getAllUsersInAppX(String userId) {
 
@@ -139,14 +140,15 @@ public class UserInfoDaoImpl extends BaseDao implements IUserInfoDao {
 		System.out.println(query.list());
 		return query.list();
 	}
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<UserInfo> getReport(Team team,String appName,UserStatus status) {
 		System.out.println("teamId :"+ (team==null?"null":team.getId())+", appName :"+ appName+", status :"+status);
 		Session session = sessionFactory.getCurrentSession();
 		
-		StringBuilder builder = new StringBuilder("SELECT u From  UserInfo u, UserAppAccess a FETCH ALL PROPERTIES WHERE u.id = a.userInfo.id");
+		StringBuilder builder = new StringBuilder("SELECT distinct u From  UserInfo u, UserAppAccess a, UserTeamAllocation ut FETCH ALL PROPERTIES WHERE u.id = a.userInfo.id");
 		if(team!=null)
-			builder.append(" ").append("and u.team = :team");
+			builder.append(" ").append("and u = ut.pk.user and ut.pk.team = :team");
 		if(StringUtils.hasText(appName))
 			builder.append(" ").append("and a.appName = :appName");
 		builder.append(" ").append("and u.status = :status");
@@ -159,10 +161,8 @@ public class UserInfoDaoImpl extends BaseDao implements IUserInfoDao {
 		if(StringUtils.hasText(appName))
 			query.setParameter("appName", appName);		
 		query.setParameter("status", status);
-//		query.setParameter("userId", "c90f4cff-768b-4009-85f7-862e4131a27c");
 		System.out.println(query.list());
 		query.setResultTransformer(Criteria.PROJECTION);
-//		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		return query.list();
 
 

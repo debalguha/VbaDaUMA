@@ -24,29 +24,27 @@ $(document).ready(function() {
 						var counter=0;
 						$.each(ret.data, function(i, item){
 							counter++;
-							$('#userInfoBody').append('<tr><td>'
-							 + item.username + '</td><td>'
-							 + item.status+ '</td><td>'
-							 + item.firstName+ '</td><td>'
-							 + item.lastName+ '</td><td>'
-							 + item.phone+ '</td><td>'
-							 + item.team.name+ '</td></tr>' );
+							var appendHtml = '<tr><td>'+ item.username + '</td><td>'+ item.status+ '</td><td>'+ item.firstName+ '</td><td>'+ item.lastName+ '</td><td>'
+							 + item.phone+ '</td><td>';
+							 if(item.userTeamAllocations){
+								 appendHtml += '<ul>';
+								 $.each(item.userTeamAllocations, function(i, teamItem){
+									 appendHtml += '<li>'+teamItem.team.name+'</li>';
+								 });
+								 appendHtml += '</ul>';
+							 }
+							 appendHtml += '</td></tr>';
+							$('#userInfoBody').append(appendHtml);
+//							$('#userInfoBody').append('<tr><td>'
+//							 + item.username + '</td><td>'
+//							 + item.status+ '</td><td>'
+//							 + item.firstName+ '</td><td>'
+//							 + item.lastName+ '</td><td>'
+//							 + item.phone+ '</td><td>'
+//							 + item.team.name+ '</td></tr>' );
 						});
 						//var array = ret.data;
 						$('#tblCaption').html(counter+" User/s matched your search.");
-//						for ( var i = 0; i < array.length; i++) {
-//						
-//							 $('#userInfoBody').append('<tr><td>'
-//									 + array[i].username + '</td><td>'
-//									 + array[i].status+ '</td><td>'
-//									 + array[i].firstName+ '</td><td>'
-//									 + array[i].lastName+ '</td><td>'
-//									 + array[i].phone+ '</td><td>'
-//									 + array[i].team.name+ '</td></tr>' );
-//
-//							
-//						}
-
 					}else{
 						alert("submit Data to Report Action failed ");
 					}
