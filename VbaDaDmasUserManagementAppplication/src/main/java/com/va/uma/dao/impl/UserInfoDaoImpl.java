@@ -151,7 +151,8 @@ public class UserInfoDaoImpl extends BaseDao implements IUserInfoDao {
 			builder.append(" ").append("and u = ut.pk.user and ut.pk.team = :team");
 		if(StringUtils.hasText(appName))
 			builder.append(" ").append("and a.appName = :appName");
-		builder.append(" ").append("and u.status = :status");
+		if(status !=null)
+			builder.append(" ").append("and u.status = :status");
 		
 		 //String hql = "SELECT u.firstName,u.username,u.status,u.lastName,u.phone,u.team  From  UserInfo u,AppAccess a FETCH ALL PROPERTIES WHERE u.team.id = ? AND a.appName = :appName AND u.user.id = a.user.id ";
 	     
@@ -159,8 +160,9 @@ public class UserInfoDaoImpl extends BaseDao implements IUserInfoDao {
 		if(team!=null)
 			query.setParameter("team", team);
 		if(StringUtils.hasText(appName))
-			query.setParameter("appName", appName);		
-		query.setParameter("status", status);
+			query.setParameter("appName", appName);	
+		if(status !=null)
+			query.setParameter("status", status);
 		System.out.println(query.list());
 		query.setResultTransformer(Criteria.PROJECTION);
 		return query.list();
