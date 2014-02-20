@@ -38,7 +38,7 @@ import com.va.uma.model.UserTeamAllocation;
 import com.va.uma.service.IUserService;
 
 @Service("userService")
-@Transactional
+//@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class UserServiceImpl implements IUserService {
 	private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 	@Autowired
@@ -56,36 +56,33 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void updateUser(UserInfo entity) {
 		userInfoDao.update(entity);
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void deleteUser(String userId) {
 		userInfoDao.delete(userInfoDao.findById(userId));
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public UserInfo getUserInfoByUsername(String username) {
-		UserInfo userInfo = userInfoDao.findByUsername(username);
-		//userInfo.setUserAppAccessList(userInfoDao.listUserAppAccess(userInfo.getId()));
-		return userInfo;
+		return userInfoDao.findByUsername(username);
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public UserInfo getUserInfoById(String id) {
-		UserInfo userInfo = userInfoDao.findById(id);
-		//userInfo.setUserAppAccessList(userInfoDao.listUserAppAccess(userInfo.getId()));
-		return userInfo;
+		return userInfoDao.findById(id);
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<UserInfo> listUser(int pageSize, int pageIndex) {
-		List<UserInfo> list = userInfoDao.listAll();
-		/*for (UserInfo userInfo : list) {
-			userInfo.setUserAppAccessList(userInfoDao.listUserAppAccess(userInfo.getId()));
-		}*/
-		return list;
+		return userInfoDao.listAll();
 	}
 
 	@Override
@@ -220,12 +217,14 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<UserInfo> listUserByTeam(String teamId) {
 		List<UserInfo> list = userInfoDao.listUserByTeam(teamId);
 		return list;
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<UserInfo> getAllActiveOrInactiveUsers(UserStatus enrity) {
 
 		List<UserInfo> list = new ArrayList<UserInfo>();
@@ -234,11 +233,13 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Collection<UserAppAccess> getAllUsersInAppX(String userId) {
 		return userInfoDao.getAllUsersInAppX(userId);
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<UserInfo> getReport(Team teamId, String appName, UserStatus status) {
 		List<UserInfo> list = new ArrayList<UserInfo>();
 		list = userInfoDao.getReport(teamId, appName, status);
@@ -266,13 +267,13 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void updateUserDetails(UserInfo updatedUser, Map<String, String> appAccessMap, Collection<Team> teams) {
-		logger.info("User update request has arrived.");
+		logger.info("User update request has arrived (1).");
 		UserInfo user = getUserInfoById(updatedUser.getId());
 		if (!user.equals(updatedUser)) {
 			logger.info("Core user attributes have changed. Will update UserInfo entity");
 			BeanUtils.copyProperties(updatedUser, user);
 		} else {
-			updatedUser = user;
+			//updatedUser = user;
 			logger.warning("Core user attributes have not changed. Will not update UserInfo entity");
 		}
 		changeUserAppAccess(appAccessMap, user);
@@ -360,7 +361,7 @@ public class UserServiceImpl implements IUserService {
 		user.setUserTeamAllocations(allocations);
 		logger.info("Team Allocations saved.");
 	}
-
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	private Collection<UserTeamAllocation> findTeamAllocationToBeDeleted(Set<UserTeamAllocation> userTeamAllocations, Collection<Team> teams) {
 		List<UserTeamAllocation> toBeDeleted = new ArrayList<UserTeamAllocation>();
 		for(UserTeamAllocation allocation : userTeamAllocations){
