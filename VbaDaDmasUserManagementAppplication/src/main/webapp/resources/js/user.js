@@ -150,7 +150,7 @@ $(document).ready(function() {
 				sendingFlag = true;
 				postData(appContextPath + "/user/update.do", data, {
 					success : function() {
-						//window.location.href = appContextPath + "/user/list.do?r=" + (+new Date());
+						window.location.href = appContextPath + "/user/list.do?r=" + (+new Date());
 					},
 					complete : function() {
 						sendingFlag = false;

@@ -1,11 +1,9 @@
 package com.va.uma.model;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,8 +12,10 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 
 
@@ -63,7 +63,8 @@ public class UserInfo implements java.io.Serializable {
 	@Column(name = "alert", nullable= true, length=500)
 	private String alert;
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.user", cascade=CascadeType.REFRESH)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.user")
+	@Cascade({CascadeType.DELETE, CascadeType.SAVE_UPDATE})
 	private Set<UserTeamAllocation> userTeamAllocations;
 
 	@Column(name = "create_date", nullable = false)
@@ -77,8 +78,9 @@ public class UserInfo implements java.io.Serializable {
 	@Column(name = "request_detail", nullable = true, length = 1000)
 	private String requestDetail;
 
-	@Transient
-	private List<UserAppAccess> userAppAccessList;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "userInfo")
+	@Cascade({CascadeType.DELETE, CascadeType.SAVE_UPDATE})
+	private Set<UserAppAccess> userAppAccessList;
 
 	public UserInfo() {
 		this.id = UUID.randomUUID().toString();
@@ -216,20 +218,11 @@ public class UserInfo implements java.io.Serializable {
 	}
 
 
-
-	/*public Team getTeam() {
-		return team;
-	}
-
-	public void setTeam(Team team) {
-		this.team = team;
-	}*/
-
-	public List<UserAppAccess> getUserAppAccessList() {
+	public Set<UserAppAccess> getUserAppAccessList() {
 		return userAppAccessList;
 	}
 
-	public void setUserAppAccessList(List<UserAppAccess> userAppAccessList) {
+	public void setUserAppAccessList(Set<UserAppAccess> userAppAccessList) {
 		this.userAppAccessList = userAppAccessList;
 	}
 

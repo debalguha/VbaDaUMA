@@ -1,5 +1,6 @@
 package com.va.uma.dao.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -36,7 +37,7 @@ public class UserInfoDaoImpl extends BaseDao implements IUserInfoDao {
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<UserAppAccess> listUserAppAccess(String userId) {
+	public Collection<UserAppAccess> listUserAppAccess(String userId) {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = "from UserAppAccess where userInfo.id = ?";
 		Query query = session.createQuery(hql);
@@ -110,7 +111,6 @@ public class UserInfoDaoImpl extends BaseDao implements IUserInfoDao {
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-
 		public List<UserInfo> listUserByTeam(String teamId) {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = "from UserInfo where team_id  = ?";
@@ -131,14 +131,13 @@ public class UserInfoDaoImpl extends BaseDao implements IUserInfoDao {
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<UserAppAccess> getAllUsersInAppX(String userId) {
-
+	public Collection<UserAppAccess> getAllUsersInAppX(String userId) {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = "from UserAppAccess where userInfo  = ?";
 		Query query = session.createQuery(hql);
 		query.setParameter(0, userId);
 		System.out.println(query.list());
-		return query.list();
+		return (Collection<UserAppAccess>)query.list();
 	}
 	@SuppressWarnings("unchecked")
 	@Override

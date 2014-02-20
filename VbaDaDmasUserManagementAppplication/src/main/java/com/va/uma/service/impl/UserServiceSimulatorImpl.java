@@ -64,7 +64,7 @@ public class UserServiceSimulatorImpl implements IUserService {
 					list.add(uaa);
 				}
 			}
-			user.setUserAppAccessList(list);
+			//user.setUserAppAccessList(list);
 			if (user.getUsername().equals(username)) {
 				return user;
 			}
@@ -81,7 +81,7 @@ public class UserServiceSimulatorImpl implements IUserService {
 					list.add(uaa);
 				}
 			}
-			user.setUserAppAccessList(list);
+			//user.setUserAppAccessList(list);
 			if (user.getId().equals(id)) {
 				return user;
 			}
@@ -97,7 +97,7 @@ public class UserServiceSimulatorImpl implements IUserService {
 					list.add(uaa);
 				}
 			}
-			userInfo.setUserAppAccessList(list);
+			//userInfo.setUserAppAccessList(list);
 		}
 		return SimulatorData.userList;
 	}

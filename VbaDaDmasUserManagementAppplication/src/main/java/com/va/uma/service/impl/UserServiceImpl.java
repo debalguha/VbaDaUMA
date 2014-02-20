@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.va.uma.dao.IAccessDao;
 import com.va.uma.dao.ITeamDao;
 import com.va.uma.dao.IUserInfoDao;
+import com.va.uma.model.Access;
 import com.va.uma.model.Team;
 import com.va.uma.model.UserAppAccess;
 import com.va.uma.model.UserInfo;
@@ -42,10 +43,10 @@ public class UserServiceImpl implements IUserService {
 	private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 	@Autowired
 	private IUserInfoDao userInfoDao;
-	
+
 	@Autowired
 	private ITeamDao teamDao;
-	
+
 	@Autowired
 	IAccessDao accessDefDao;
 
@@ -67,26 +68,23 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public UserInfo getUserInfoByUsername(String username) {
 		UserInfo userInfo = userInfoDao.findByUsername(username);
-		userInfo.setUserAppAccessList(userInfoDao.listUserAppAccess(userInfo
-				.getId()));
+		//userInfo.setUserAppAccessList(userInfoDao.listUserAppAccess(userInfo.getId()));
 		return userInfo;
 	}
 
 	@Override
 	public UserInfo getUserInfoById(String id) {
 		UserInfo userInfo = userInfoDao.findById(id);
-		userInfo.setUserAppAccessList(userInfoDao.listUserAppAccess(userInfo
-				.getId()));
+		//userInfo.setUserAppAccessList(userInfoDao.listUserAppAccess(userInfo.getId()));
 		return userInfo;
 	}
 
 	@Override
 	public List<UserInfo> listUser(int pageSize, int pageIndex) {
 		List<UserInfo> list = userInfoDao.listAll();
-		for (UserInfo userInfo : list) {
-			userInfo.setUserAppAccessList(userInfoDao
-					.listUserAppAccess(userInfo.getId()));
-		}
+		/*for (UserInfo userInfo : list) {
+			userInfo.setUserAppAccessList(userInfoDao.listUserAppAccess(userInfo.getId()));
+		}*/
 		return list;
 	}
 
@@ -147,8 +145,7 @@ public class UserServiceImpl implements IUserService {
 			// Set From: header field of the header.
 			message.setFrom(new InternetAddress(from));
 			// Set To: header field of the header.
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
-					to));
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
 			if (type == "alert") {
 				message.setSubject("your account status ");
@@ -156,13 +153,11 @@ public class UserServiceImpl implements IUserService {
 			}
 			if (type == "creator") {
 				message.setSubject("your password has been changed !");
-				message.setText("For security reason your password has"
-						+ " been changed by Adminstrator please contact to UMAaDMIN@DNCX.COM");
+				message.setText("For security reason your password has" + " been changed by Adminstrator please contact to UMAaDMIN@DNCX.COM");
 			}
 			if (type == "user") {
 				message.setSubject("your password has been changed !");
-				message.setText("your password has been Successfully changed"
-						+ " if you havent change the password  please contact immidtately to UMAaDMIN@DNCX.COM");
+				message.setText("your password has been Successfully changed" + " if you havent change the password  please contact immidtately to UMAaDMIN@DNCX.COM");
 			}
 
 			// Send message
@@ -196,33 +191,25 @@ public class UserServiceImpl implements IUserService {
 				System.out.println("inside if (!b)");
 				if (diffDays > 25 && diffDays < 30) {
 
-					user.setAlert("alert:Your Account will be inactive by :"
-							+ remainDays
-							+ "  Days.please login to your acount to"
-							+ " avoid your account become inactive ");
+					user.setAlert("alert:Your Account will be inactive by :" + remainDays + "  Days.please login to your acount to" + " avoid your account become inactive ");
 					try {
 
 						sendEmailToUser(user.getId(), "alert");
 
 					} catch (Exception e) {
 						e.printStackTrace();
-						System.out.println("updateUserStatusById INSIDE "
-								+ "diffDays>30 failed send email failed");
+						System.out.println("updateUserStatusById INSIDE " + "diffDays>30 failed send email failed");
 					}
 				}
 				if (diffDays > 30) {
 					user.setStatus(UserStatus.inactive);
-					user.setAlert("$$$$$$$$$$$$$$$$$$$the  account didnt Login for:"
-							+ diffDays
-							+ "  days and now is inactive. "
-							+ "please contact to admin ");
+					user.setAlert("$$$$$$$$$$$$$$$$$$$the  account didnt Login for:" + diffDays + "  days and now is inactive. " + "please contact to admin ");
 
 					try {
 						sendEmailToUser(user.getId(), "alert");
 					} catch (Exception e) {
 						e.printStackTrace();
-						System.out.println("updateUserStatusById INSIDE"
-								+ " diffDays>30 failed send email failed ");
+						System.out.println("updateUserStatusById INSIDE" + " diffDays>30 failed send email failed ");
 					}
 
 				}
@@ -247,46 +234,57 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public List<UserAppAccess> getAllUsersInAppX(String userId) {
-		List<UserAppAccess> list = new ArrayList<UserAppAccess>();
-		list = userInfoDao.getAllUsersInAppX(userId);
-		return list;
+	public Collection<UserAppAccess> getAllUsersInAppX(String userId) {
+		return userInfoDao.getAllUsersInAppX(userId);
 	}
 
 	@Override
-	public List<UserInfo> getReport(Team teamId, String appName,
-			UserStatus status) {
+	public List<UserInfo> getReport(Team teamId, String appName, UserStatus status) {
 		List<UserInfo> list = new ArrayList<UserInfo>();
 		list = userInfoDao.getReport(teamId, appName, status);
 		return list;
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void saveUserDetails(UserInfo user, Map<String, String> appAccessMap, Collection<Team> teams) {
+		Set<UserAppAccess> accesses = new HashSet<UserAppAccess>();
+		for (Map.Entry<String, String> entry : appAccessMap.entrySet()) {
+			String appName = entry.getKey();
+			String accessId = entry.getValue();
+			UserAppAccess userAppAccess = new UserAppAccess();
+			userAppAccess.setUserInfo(user);
+			userAppAccess.setAppName(appName);
+			userAppAccess.setAccess(accessDefDao.findById(accessId));
+			accesses.add(userAppAccess);
+		}
+		user.setUserAppAccessList(accesses);
+		createAndAttachTeamAllocations(teams, user);
+		saveUser(user);
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void updateUserDetails(UserInfo updatedUser, Map<String, String> appAccessMap, Collection<Team> teams) {
 		logger.info("User update request has arrived.");
 		UserInfo user = getUserInfoById(updatedUser.getId());
-		if(!user.equals(updatedUser)){
+		if (!user.equals(updatedUser)) {
 			logger.info("Core user attributes have changed. Will update UserInfo entity");
 			BeanUtils.copyProperties(updatedUser, user);
-			userInfoDao.update(user);
-		}else{
+		} else {
 			updatedUser = user;
 			logger.warning("Core user attributes have not changed. Will not update UserInfo entity");
 		}
-		Collection<UserAppAccess> userAppAccesses = createUserAppAccList(appAccessMap, user);
-		for(UserAppAccess userAppAccess : userAppAccesses){
-			userInfoDao.updateUserAppAccess(userAppAccess);
-		}
+		changeUserAppAccess(appAccessMap, user);
 		updateAndSaveTeamAllocations(teams, user);
+		userInfoDao.update(user);
 	}
 
 	public void setTeamDao(ITeamDao teamDao) {
 		this.teamDao = teamDao;
 	}
-
-	
-	private Collection<UserAppAccess> createUserAppAccList(Map<String, String> appAccessMap, UserInfo user) {
+	@Transactional(propagation = Propagation.MANDATORY)
+	private void changeUserAppAccess(Map<String, String> appAccessMap, UserInfo user) {
 		logger.info("Creating UserAppAccess update list");
 		Set<UserAppAccess> appAccesses = new HashSet<UserAppAccess>();
 		Set<String> appAccessSet = appAccessMap.keySet();
@@ -295,93 +293,83 @@ public class UserServiceImpl implements IUserService {
 		while (appAccessIterator.hasNext()) {
 			String appName = (String) appAccessIterator.next();
 			String access = appAccessMap.get(appName);
-			UserAppAccess userAppAccess = new UserAppAccess();
-			userAppAccess.setUserInfo(user);
-			userAppAccess.setAppName(appName);
-			userAppAccess.setAccess(accessDefDao.findById(access));
-			if(!userAppAccess.equals(userAppAccessMapFromUserObject.get(appName))){
-				logger.info("Found one App Access to be updated old["+userAppAccessMapFromUserObject+"], new[Access: "+userAppAccess.getAccess()+"]");
-				UserAppAccess userAppAccessToAdd = userAppAccessMapFromUserObject.get(appName);
-				userAppAccessToAdd.setAccess(userAppAccess.getAccess());
-				appAccesses.add(userAppAccessToAdd);
-			}
+			Access acces = accessDefDao.findById(access);
+			UserAppAccess origUserAppAccess = userAppAccessMapFromUserObject.get(appName);
+			if(!origUserAppAccess.getAccess().equals(acces))
+				origUserAppAccess.setAccess(acces);
+			appAccesses.add(origUserAppAccess);
 		}
-		logger.info("Total "+appAccesses.size()+" user app accesses to update.");
-		return appAccesses;
 	}
-	
+	@Transactional(propagation = Propagation.MANDATORY)
 	private Map<String, UserAppAccess> createuserAppAccessMapFromUserObject(UserInfo user) {
 		Map<String, UserAppAccess> retMap = new HashMap<String, UserAppAccess>();
-		List<UserAppAccess> userAppAccessList = user.getUserAppAccessList();
-		for(UserAppAccess userAppAccess : userAppAccessList)
+		Set<UserAppAccess> userAppAccessList = user.getUserAppAccessList();
+		for (UserAppAccess userAppAccess : userAppAccessList)
 			retMap.put(userAppAccess.getAppName(), userAppAccess);
-		
+
 		return retMap;
-	}	
-	
-	@Override
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public void saveUserDetails(UserInfo user, Map<String, String> appAccessMap, Collection<Team> teams) {
-		saveUser(user);
-		for(Map.Entry<String, String> entry : appAccessMap.entrySet()){
-			String appName = entry.getKey();
-			String accessId = entry.getValue();
-			UserAppAccess userAppAccess = new UserAppAccess();
-			userAppAccess.setUserInfo(user);
-			userAppAccess.setAppName(appName);
-			userAppAccess.setAccess(accessDefDao.findById(accessId));
-			userInfoDao.saveUserAppAccess(userAppAccess);
-		}
-		createAndSaveTeamAllocations(teams, user);
 	}
-	
-	@Transactional(propagation=Propagation.MANDATORY)
-	private void createAndSaveTeamAllocations(Collection<Team> teams, UserInfo user){
+	@Transactional(propagation = Propagation.MANDATORY)
+	private void createAndAttachTeamAllocations(Collection<Team> teams, UserInfo user) {
 		logger.info("Team allocation creation request arrived.");
-		if(teams==null || teams.isEmpty()){
+		if (teams == null || teams.isEmpty()) {
 			logger.warning("No team provided. Existing!!");
 			return;
-		}else{
-			logger.info("Creating allocation for "+user.getUsername()+", and teams: "+teams);
+		} else {
+			logger.info("Creating allocation for " + user.getUsername() + ", and teams: " + teams);
 		}
-		for(Team team : teams){
+		Set<UserTeamAllocation> allocations = new HashSet<UserTeamAllocation>();
+		for (Team team : teams) {
 			UserTeamAllocation userTeamAllocation = new UserTeamAllocation();
 			UserTeamAllocationPK pk = new UserTeamAllocationPK();
 			pk.setTeam(team);
 			pk.setUser(user);
 			userTeamAllocation.setPk(pk);
-			logger.info("Saving team: "+team);
-			teamDao.save(userTeamAllocation);
+			allocations.add(userTeamAllocation);
 		}
-		logger.info("Team Allocations saved.");
+		user.setUserTeamAllocations(allocations);
 	}
-	
-	@Transactional(propagation=Propagation.MANDATORY)
-	private void updateAndSaveTeamAllocations(Collection<Team> teams, UserInfo user){
+
+	@Transactional(propagation = Propagation.MANDATORY)
+	private void updateAndSaveTeamAllocations(Collection<Team> teams, UserInfo user) {
 		logger.info("Team allocation creation request arrived.");
-		if(teams==null || teams.isEmpty()){
+		if (teams == null || teams.isEmpty()) {
 			logger.warning("No team provided. Existing!!");
 			return;
 		}
 		logger.info("Deleted Existing teams.");
-		Set<UserTeamAllocation> userTeamAllocations = user.getUserTeamAllocations();
-		if(userTeamAllocations!=null && !userTeamAllocations.isEmpty()){
-			for(UserTeamAllocation userTeamAllocation : userTeamAllocations)
+		Collection<UserTeamAllocation> userTeamAllocations = findTeamAllocationToBeDeleted(user.getUserTeamAllocations(), teams);
+		if (userTeamAllocations != null && !userTeamAllocations.isEmpty()) {
+			for (UserTeamAllocation userTeamAllocation : userTeamAllocations){
+				user.getUserTeamAllocations().remove(userTeamAllocation);
 				teamDao.delete(userTeamAllocation);
+			}
 		}
-		logger.info("Creating allocation for "+user.getUsername()+", and teams: "+teams);
-		for(Team team : teams){
+		Set<UserTeamAllocation> allocations = user.getUserTeamAllocations();
+		if(allocations == null)
+			allocations = new HashSet<UserTeamAllocation>();
+		logger.info("Creating allocation for " + user.getUsername() + ", and teams: " + teams);
+		for (Team team : teams) {
 			UserTeamAllocation userTeamAllocation = new UserTeamAllocation();
 			UserTeamAllocationPK pk = new UserTeamAllocationPK();
 			pk.setTeam(team);
 			pk.setUser(user);
 			userTeamAllocation.setPk(pk);
-			logger.info("Saving team: "+team);
-			teamDao.save(userTeamAllocation);
+			allocations.add(userTeamAllocation);
 		}
+		user.setUserTeamAllocations(allocations);
 		logger.info("Team Allocations saved.");
-	}	
-	
+	}
+
+	private Collection<UserTeamAllocation> findTeamAllocationToBeDeleted(Set<UserTeamAllocation> userTeamAllocations, Collection<Team> teams) {
+		List<UserTeamAllocation> toBeDeleted = new ArrayList<UserTeamAllocation>();
+		for(UserTeamAllocation allocation : userTeamAllocations){
+			if(!teams.contains(allocation.getTeam()))
+				toBeDeleted.add(allocation);
+		}
+		return toBeDeleted;
+	}
+
 	public void setUserInfoDao(IUserInfoDao userInfoDao) {
 		this.userInfoDao = userInfoDao;
 	}

@@ -1,5 +1,6 @@
 package com.va.uma.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.va.uma.model.Team;
@@ -21,7 +22,7 @@ public interface IUserInfoDao {
 
 	UserInfo findByEmail(String email);
 	
-	List<UserAppAccess> listUserAppAccess(String userId);
+	Collection<UserAppAccess> listUserAppAccess(String userId);
 
 	List<UserInfo> listAll();
 
@@ -41,7 +42,7 @@ public interface IUserInfoDao {
 	
 	List<UserInfo> getAllActiveUsers(UserStatus entity);
 
-	List<UserAppAccess> getAllUsersInAppX(String userId);
+	Collection<UserAppAccess> getAllUsersInAppX(String userId);
 	
 	List<UserInfo> getReport(Team team,String appName,UserStatus stattus);
 

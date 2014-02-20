@@ -44,7 +44,7 @@ public interface IUserService {
 	
 	List<UserInfo> getAllActiveOrInactiveUsers(UserStatus entity);
 	
-	List<UserAppAccess> getAllUsersInAppX(String userId);
+	Collection<UserAppAccess> getAllUsersInAppX(String userId);
 	
 	List<UserInfo> getReport(Team team,String appName,UserStatus status);
 

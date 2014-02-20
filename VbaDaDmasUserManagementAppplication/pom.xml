@@ -25,7 +25,7 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		  <dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
@@ -51,11 +51,11 @@
 			<version>2.4</version>
 		</dependency>
 
-		 <dependency>
+		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 			<version>1.4</version>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
@@ -126,6 +126,12 @@
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
 			<version>1.1.1</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>icu4j</artifactId>
+					<groupId>com.ibm.icu</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>quartz</groupId>
@@ -210,7 +216,7 @@
 			<version>4.1.9.Final</version>
 		</dependency>
 
-	
+
 	</dependencies>
 
 	<build>
@@ -235,7 +241,7 @@
 		<plugins>
 
 
-			   <plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -256,34 +262,25 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				
 			</plugin>
-			<!-- <plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-antrun-plugin</artifactId>
-			    <version>1.6</version>
-			    <executions>
-			        <execution>
-			            <id>deploy-to-server</id>
-			            <phase>pre-integration-test</phase>
-			            <configuration>
-			                <tasks>
-			                <property environment="env"/>
-			                <taskdef name="wldeploy" classpath="C:/bea/wlserver_10.3/server/lib/weblogic.jar"
-			                      classname="weblogic.ant.taskdefs.management.WLDeploy"/>
-			                <wldeploy action="deploy" verbose="true" source="C:/Dev/SVN/UMA_POC/target/VbaDaUMA.war"
-			                      name="VbaDaUMA" user="weblogic" password="weblogic"
-			                      adminurl="t3://localhost:7001"
-			                      targets="examplesServer"/>
-			            </tasks>
-			            </configuration>
-			            <goals>
-			                <goal>run</goal>
-			            </goals>
-			        </execution>
-			    </executions>
-			</plugin>  -->  
-
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<configuration>
+					<webAppSourceDirectory>${basedir}/src/main/webapp</webAppSourceDirectory>
+					<webApp>
+						<contextPath>/</contextPath>
+						<descriptor>${basedir}/src/main/webapp/web.xml</descriptor>
+						<!-- <jettyEnvXml>${basedir}/src/over/here/jetty-env.xml</jettyEnvXml> -->
+					</webApp>
+					<classesDirectory>${basedir}/target/classes</classesDirectory>
+					<scanTargets>
+						<scanTarget>src/main/webapp</scanTarget>
+						<scanTarget>target/classes</scanTarget>
+					</scanTargets>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+				</configuration>
+			</plugin>
 
 		</plugins>
 	</build>

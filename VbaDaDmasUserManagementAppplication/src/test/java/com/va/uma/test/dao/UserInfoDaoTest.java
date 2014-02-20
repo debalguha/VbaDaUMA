@@ -4,6 +4,7 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -29,7 +30,7 @@ public class UserInfoDaoTest extends BaseDaoTest {
 		info.setType(UserType.creator);
 		userInfoDao.save(info);
 	}
-	@Ignore
+	//@Ignore
 	@Test
 	public void findByUsername() {
 		UserInfo obj = userInfoDao.findByUsername("reza");
@@ -43,7 +44,7 @@ public class UserInfoDaoTest extends BaseDaoTest {
 		Assert.assertEquals(1, list.size());
 		System.out.println(list);
 	}
-	@Ignore
+	//@Ignore
 	@Test
 	public void update() {
 		String username = "reza";
@@ -74,7 +75,7 @@ public class UserInfoDaoTest extends BaseDaoTest {
 	@Ignore
 	@Test
 	public void listUserAppAccess() {
-		List<UserAppAccess> list = userInfoDao.listUserAppAccess("43fa0d78-8d83-4508-8b02-ac4cf171dbdd");
+		Set<UserAppAccess> list = userInfoDao.findById("43fa0d78-8d83-4508-8b02-ac4cf171dbdd").getUserAppAccessList();
 		System.out.println(list);
 	}
 	@Ignore
@@ -82,7 +83,7 @@ public class UserInfoDaoTest extends BaseDaoTest {
 	public void deleteAllAppAccessByUserId() {
 		userInfoDao.deleteAllAppAccessByUserId("43fa0d78-8d83-4508-8b02-ac4cf171dbdd");
 	}
-	
+	@Ignore
 	@Test
 	public void getReportTest(){
 		List<?> report = null;

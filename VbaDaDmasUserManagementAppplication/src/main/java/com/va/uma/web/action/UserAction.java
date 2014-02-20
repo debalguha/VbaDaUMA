@@ -42,7 +42,7 @@ public class UserAction extends BaseAction {
 	@RequestMapping("/user/{userId}/details.do")
 	public UserDetails userDetail(@PathVariable String userId) {
 		UserInfo userInfo = userService.getUserInfoById(userId);
-		List<UserAppAccess> userAppAccessList = userInfo.getUserAppAccessList();
+		Set<UserAppAccess> userAppAccessList = userInfo.getUserAppAccessList();
 		Map<String, String> appAccessMap = new HashMap<String, String>();
 		if(userAppAccessList!=null){
 			for(UserAppAccess userAppAccess : userAppAccessList){
@@ -198,7 +198,6 @@ public class UserAction extends BaseAction {
 		requestMap.remove("type");
 		requestMap.remove("status");
 		Map<String, String> appAccessMap = getUserAppAccess(request, requestMap);
-		//Collection<UserAppAccess> appAccesses = createUserAppAccList(appAccessMap, user);
 		try {
 			BeanUtils.populate(user, requestMap);
 		} catch (Exception e) {
@@ -206,14 +205,16 @@ public class UserAction extends BaseAction {
 		}
 		user.setStatus(UserStatus.valueOf(status));
 		user.setType(UserType.valueOf(type));
-		logger.info("Going to fetch teams with id: "+Arrays.asList(teamIds));
-		List<Team> teams = new ArrayList<Team>(teamIds.length);
-		for(String teamId : teamIds){
-			Team team = appService.getTeam(teamId);
-			if(team!=null)
-				teams.add(team);
+		List<Team> teams = new ArrayList<Team>();
+		if(teamIds!=null){
+			logger.info("Going to fetch teams with id: "+Arrays.asList(teamIds));
+			for(String teamId : teamIds){
+				Team team = appService.getTeam(teamId);
+				if(team!=null)
+					teams.add(team);
+			}
+			logger.info("Teams:: "+teams);
 		}
-		logger.info("Teams:: "+teams);
 		userService.updateUserDetails(user, appAccessMap, teams);
 		responseJson4Success(response);
 	}
