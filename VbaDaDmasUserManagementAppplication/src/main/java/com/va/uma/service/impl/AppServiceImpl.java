@@ -17,7 +17,7 @@ import com.va.uma.model.Team;
 import com.va.uma.service.IAppService;
 
 @Service("appService")
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED)
 public class AppServiceImpl implements IAppService {
 
 	@Autowired
@@ -26,10 +26,6 @@ public class AppServiceImpl implements IAppService {
 	ITeamDao teamDao;
 	@Autowired
 	IApplicationDao applicationDao;
-
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
-
-	
 
 	@Override
 	public List<Access> getAccessList() {
@@ -120,4 +116,9 @@ public class AppServiceImpl implements IAppService {
 		return  teamDao.getTeamInfoByName(team) ;
 	}
 
+	@Override
+	public AppAccess getAppAccessForAppAndAccess(String app, String accessId){
+		return applicationDao.findAppAccessForAppAndAccess(app, accessId);
+	}
+	
 }

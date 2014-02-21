@@ -10,11 +10,7 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "user_team_allocation")
-@AssociationOverrides({
-	@AssociationOverride(name = "pk.user", 
-		joinColumns = @JoinColumn(name = "user_id")),
-	@AssociationOverride(name = "pk.team", 
-		joinColumns = @JoinColumn(name = "team_id")) })
+@AssociationOverrides({ @AssociationOverride(name = "pk.user", joinColumns = @JoinColumn(name = "user_id")), @AssociationOverride(name = "pk.team", joinColumns = @JoinColumn(name = "team_id")) })
 public class UserTeamAllocation implements java.io.Serializable {
 
 	/**
@@ -26,18 +22,17 @@ public class UserTeamAllocation implements java.io.Serializable {
 	 */
 	@EmbeddedId
 	private UserTeamAllocationPK pk = new UserTeamAllocationPK();
-	
+
 	@Transient
-	public UserInfo getUser(){
+	public UserInfo getUser() {
 		return pk.getUser();
 	}
-	
+
 	@Transient
-	public Team getTeam(){
+	public Team getTeam() {
 		return pk.getTeam();
 	}
-	
-	
+
 	@Override
 	public int hashCode() {
 		return (getPk() != null ? getPk().hashCode() : 0);
@@ -66,5 +61,5 @@ public class UserTeamAllocation implements java.io.Serializable {
 
 	public void setPk(UserTeamAllocationPK pk) {
 		this.pk = pk;
-	}	
+	}
 }

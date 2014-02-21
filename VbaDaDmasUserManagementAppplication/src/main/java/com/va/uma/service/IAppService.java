@@ -43,5 +43,7 @@ public interface IAppService {
 	void deleteAppAccess(String id);
 
 	AppAccess getAppAccess(String id);
+	
+	AppAccess getAppAccessForAppAndAccess(String app, String accessId);
 
 }

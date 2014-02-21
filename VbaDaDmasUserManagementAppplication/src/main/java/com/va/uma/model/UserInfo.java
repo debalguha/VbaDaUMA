@@ -78,8 +78,8 @@ public class UserInfo implements java.io.Serializable {
 	@Column(name = "request_detail", nullable = true, length = 1000)
 	private String requestDetail;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "userInfo")
-	@Cascade({CascadeType.DELETE, CascadeType.SAVE_UPDATE})
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.user")
+	@Cascade({CascadeType.ALL})
 	private Set<UserAppAccess> userAppAccessList;
 
 	public UserInfo() {

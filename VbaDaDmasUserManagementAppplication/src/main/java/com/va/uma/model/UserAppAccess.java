@@ -2,87 +2,54 @@ package com.va.uma.model;
 
 import java.util.UUID;
 
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "user_app_access")
-@Embeddable
+@AssociationOverrides({ @AssociationOverride(name = "pk.user", joinColumns = @JoinColumn(name = "user_id")), @AssociationOverride(name = "pk.appAccess", joinColumns = {@JoinColumn(name = "application_id"), @JoinColumn(name = "access_id")}) })
 public class UserAppAccess implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7933770163144650730L;
-	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 80)
-	private String id;
+	
+	@EmbeddedId
+	private UserAppAccessPK pk = new UserAppAccessPK();
 
-	@OneToOne
-	@JoinColumn(name = "user_id")
-	private UserInfo userInfo;
-
-	@Column(name = "app_name", nullable = false, length = 100)
-	private String appName;
-
-	@OneToOne
-	@JoinColumn(name = "access_id")
-	private Access access;
-
-	public UserAppAccess() {
-		this.id = UUID.randomUUID().toString();
+	public UserAppAccessPK getPk() {
+		return pk;
 	}
 
-	public UserAppAccess(UserInfo userInfo, String appName, Access access) {
-		this.id = UUID.randomUUID().toString();
-		this.userInfo = userInfo;
-		this.appName = appName;
-		this.access = access;
+	public void setPk(UserAppAccessPK pk) {
+		this.pk = pk;
 	}
-
-	public String getAppName() {
-		return appName;
+	
+	@Transient
+	public UserInfo getUser(){
+		return pk.getUser();
 	}
-
-	public void setAppName(String appName) {
-		this.appName = appName;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public Access getAccess() {
-		return access;
-	}
-
-	public void setAccess(Access access) {
-		this.access = access;
-	}
-
-	public UserInfo getUserInfo() {
-		return userInfo;
-	}
-
-	public void setUserInfo(UserInfo userInfo) {
-		this.userInfo = userInfo;
+	
+	@Transient
+	public AppAccess getAppAccess(){
+		return pk.getAppAccess();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((access == null) ? 0 : access.hashCode());
-		result = prime * result + ((appName == null) ? 0 : appName.hashCode());
+		result = prime * result + ((pk == null) ? 0 : pk.hashCode());
 		return result;
 	}
 
@@ -95,15 +62,10 @@ public class UserAppAccess implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		UserAppAccess other = (UserAppAccess) obj;
-		if (access == null) {
-			if (other.access != null)
+		if (pk == null) {
+			if (other.pk != null)
 				return false;
-		} else if (!access.equals(other.access))
-			return false;
-		if (appName == null) {
-			if (other.appName != null)
-				return false;
-		} else if (!appName.equals(other.appName))
+		} else if (!pk.equals(other.pk))
 			return false;
 		return true;
 	}

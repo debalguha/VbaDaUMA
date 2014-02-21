@@ -35,6 +35,12 @@ public class UserInfoDaoImpl extends BaseDao implements IUserInfoDao {
 	public UserInfo findById(String id) {
 		return (UserInfo) super.findById(UserInfo.class, id);
 	}
+	public void merge(UserInfo userInfo){
+		super.merge(userInfo);
+	}
+	public void saveOrUpdate(UserInfo entity){
+		super.saveOrUpdate(entity);
+	}
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<UserAppAccess> listUserAppAccess(String userId) {

@@ -33,18 +33,29 @@ public class Application implements java.io.Serializable {
 	public Application(String name) {
 		this.name = name;
 	}
-	// @ManyToMany(targetEntity = Access.class, cascade = { CascadeType.MERGE,
-	// CascadeType.PERSIST })
-	// @JoinTable(name = "app_access", joinColumns = { @JoinColumn(name =
-	// "app_name") }, inverseJoinColumns = { @JoinColumn(name = "access_id") })
-	// private Set<Access> accesses;
-	//
-	// public Set<Access> getAccesses() {
-	// return accesses;
-	// }
-	//
-	// public void setAccesses(Set<Access> accesses) {
-	// this.accesses = accesses;
-	// }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Application other = (Application) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
 }

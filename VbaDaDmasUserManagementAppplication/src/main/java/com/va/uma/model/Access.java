@@ -23,11 +23,6 @@ public class Access implements java.io.Serializable {
 	@Column(name = "access_code", unique = true, nullable = false, length = 10)
 	private String code;
 
-	// @ManyToMany(targetEntity = Application.class, cascade = {
-	// CascadeType.MERGE, CascadeType.PERSIST })
-	// @JoinTable(name = "app_access", joinColumns = { @JoinColumn(name =
-	// "access_id") }, inverseJoinColumns = { @JoinColumn(name = "app_name") })
-	// private Set<Application> applications;
 
 	public Access() {
 		this.id = UUID.randomUUID().toString();

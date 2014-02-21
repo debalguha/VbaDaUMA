@@ -69,7 +69,7 @@ public class AppAction extends BaseAction {
 		responseJson4Success(response);
 	}
 
-	@RequestMapping("/app-access/save.do")
+/*	@RequestMapping("/app-access/save.do")
 	public void saveAppAccess(HttpServletRequest request, HttpServletResponse response, Model model,
 			@RequestParam(value = "appName") String appName, @RequestParam(value = "accessId") String accessId) {
 		AppAccess obj = new AppAccess();
@@ -103,7 +103,7 @@ public class AppAction extends BaseAction {
 
 		appService.deleteAppAccess(id);
 		responseJson4Success(response);
-	}
+	}*/
 
 	@RequestMapping("/team/save.do")
 	public void saveTeam(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "name") String name,

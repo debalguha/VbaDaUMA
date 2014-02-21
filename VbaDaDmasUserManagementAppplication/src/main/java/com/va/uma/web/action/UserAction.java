@@ -39,7 +39,7 @@ import com.va.uma.util.MD5;
 public class UserAction extends BaseAction {
 	private static final Logger logger = Logger.getLogger(UserAction.class.getName());
 	
-	@RequestMapping("/user/{userId}/details.do")
+/*	@RequestMapping("/user/{userId}/details.do")
 	public UserDetails userDetail(@PathVariable String userId) {
 		UserInfo userInfo = userService.getUserInfoById(userId);
 		Set<UserAppAccess> userAppAccessList = userInfo.getUserAppAccessList();
@@ -59,7 +59,7 @@ public class UserAction extends BaseAction {
 		}
 		
 		return new UserDetails(appAccessMap, teams);
-	}
+	}*/
 	
 	@RequestMapping("/user/list.do")
 	public String listPage(HttpServletRequest request, HttpServletResponse response, Model model) {

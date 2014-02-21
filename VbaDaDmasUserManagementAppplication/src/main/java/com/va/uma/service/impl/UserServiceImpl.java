@@ -26,11 +26,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.va.uma.dao.IAccessDao;
+import com.va.uma.dao.IApplicationDao;
 import com.va.uma.dao.ITeamDao;
 import com.va.uma.dao.IUserInfoDao;
 import com.va.uma.model.Access;
+import com.va.uma.model.AppAccess;
 import com.va.uma.model.Team;
 import com.va.uma.model.UserAppAccess;
+import com.va.uma.model.UserAppAccessPK;
 import com.va.uma.model.UserInfo;
 import com.va.uma.model.UserTeamAllocationPK;
 import com.va.uma.model.UserInfo.UserStatus;
@@ -49,6 +52,9 @@ public class UserServiceImpl implements IUserService {
 
 	@Autowired
 	IAccessDao accessDefDao;
+	
+	@Autowired
+	IApplicationDao applicationDao;
 
 	@Override
 	public void saveUser(UserInfo entity) {
@@ -253,10 +259,12 @@ public class UserServiceImpl implements IUserService {
 		for (Map.Entry<String, String> entry : appAccessMap.entrySet()) {
 			String appName = entry.getKey();
 			String accessId = entry.getValue();
+			AppAccess appAccess = applicationDao.findAppAccessForAppAndAccess(appName, accessId);
 			UserAppAccess userAppAccess = new UserAppAccess();
-			userAppAccess.setUserInfo(user);
-			userAppAccess.setAppName(appName);
-			userAppAccess.setAccess(accessDefDao.findById(accessId));
+			UserAppAccessPK pk = new UserAppAccessPK();
+			pk.setAppAccess(appAccess);
+			pk.setUser(user);
+			userAppAccess.setPk(pk);
 			accesses.add(userAppAccess);
 		}
 		user.setUserAppAccessList(accesses);
@@ -286,7 +294,7 @@ public class UserServiceImpl implements IUserService {
 	}
 	@Transactional(propagation = Propagation.MANDATORY)
 	private void changeUserAppAccess(Map<String, String> appAccessMap, UserInfo user) {
-		logger.info("Creating UserAppAccess update list");
+		/*logger.info("Creating UserAppAccess update list");
 		Set<UserAppAccess> appAccesses = new HashSet<UserAppAccess>();
 		Set<String> appAccessSet = appAccessMap.keySet();
 		Iterator<String> appAccessIterator = appAccessSet.iterator();
@@ -299,14 +307,14 @@ public class UserServiceImpl implements IUserService {
 			if(!origUserAppAccess.getAccess().equals(acces))
 				origUserAppAccess.setAccess(acces);
 			appAccesses.add(origUserAppAccess);
-		}
+		}*/
 	}
 	@Transactional(propagation = Propagation.MANDATORY)
 	private Map<String, UserAppAccess> createuserAppAccessMapFromUserObject(UserInfo user) {
 		Map<String, UserAppAccess> retMap = new HashMap<String, UserAppAccess>();
-		Set<UserAppAccess> userAppAccessList = user.getUserAppAccessList();
+		/*Set<UserAppAccess> userAppAccessList = user.getUserAppAccessList();
 		for (UserAppAccess userAppAccess : userAppAccessList)
-			retMap.put(userAppAccess.getAppName(), userAppAccess);
+			retMap.put(userAppAccess.getAppName(), userAppAccess);*/
 
 		return retMap;
 	}
@@ -377,6 +385,10 @@ public class UserServiceImpl implements IUserService {
 
 	public void setAccessDefDao(IAccessDao accessDefDao) {
 		this.accessDefDao = accessDefDao;
+	}
+
+	public void setApplicationDao(IApplicationDao applicationDao) {
+		this.applicationDao = applicationDao;
 	}
 
 }

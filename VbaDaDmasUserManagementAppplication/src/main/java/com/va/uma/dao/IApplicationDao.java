@@ -19,4 +19,10 @@ public interface IApplicationDao {
 
 	AppAccess findById(String id);
 
+	List<AppAccess> findAppAccessForApp(Application app);
+	
+	Application findApplication(String appName);
+
+	AppAccess findAppAccessForAppAndAccess(String app, String accessId);
+
 }

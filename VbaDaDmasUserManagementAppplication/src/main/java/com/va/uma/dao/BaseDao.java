@@ -1,5 +1,7 @@
 package com.va.uma.dao;
 
+import java.io.Serializable;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +34,15 @@ public class BaseDao {
 	@SuppressWarnings("rawtypes")
 	protected Object findById(Class clazz, String id) {
 		return getSession().get(clazz, id);
+	}
+	@SuppressWarnings("rawtypes")
+	protected Object findById(Class clazz, Serializable id) {
+		return getSession().get(clazz, id);
+	}	
+	public void saveOrUpdate(Object entity) {
+		getSession().saveOrUpdate(entity);
+	}
+	public void merge(Object obj){
+		getSession().merge(obj);
 	}
 }
